@@ -7,7 +7,7 @@ using namespace std;
 
 //Constructor: stores a char, sets next to NULL
 Node::Node(char newToken){
-  token = newToken
+  token = newToken;
   next = NULL;
 }
 

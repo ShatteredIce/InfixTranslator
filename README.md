@@ -1,2 +1,2 @@
 # InfixTranslator
-C++ Project 9
+C++ Project 8
