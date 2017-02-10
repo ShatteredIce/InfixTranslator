@@ -5,15 +5,17 @@
 using namespace std;
 
 void getInput(char* input);
-bool isInfix(char* input);
+bool isValidInput(char* input);
 void deleteWhitespace(char* input);
 
 int main(){
 
-  Node* head = NULL;
+  Node* inputHead = NULL;
+  Node* operatorHead = NULL;
+  Node* outputHead
+  Node* temp;
   bool running = true;
   char input[81];
-  char validChars[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '(', ')'};
 
   cout << "\n-----Infix Translator v1.0-----\n";
   cout << "Converts expressions into prefix or postfix notation\n";
@@ -27,21 +29,23 @@ int main(){
       cout << "\nProgram Terminated." << endl;
       running = false;
     }
-    else if(isInfix(input)){
-      cout << "valid\n";
-    }
-    else{
-      cout << "invalid\n";
-    }
+    else if(isValidInput(input)){
+      head = new Node(input[0]);
+      temp = head;
+      for(int i = 1; i < strlen(input); i++){
+        temp.setNext(new Node(input[i]));
+        temp = temp.getNext();
+      }
+
   }
-  
+
   return 0;
 }
 
 //checks if the user input is valid
-bool isInfix(char* input){
+bool isValidInput(char* input){
   for(int i = 0; i < strlen(input); i++){
-    if(!(isdigit(input[i]) || input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' || input[i] == '(' || input[i] == ')')){
+    if(!(isdigit(input[i]) || input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' || input[i] == '(' || input[i] == ')' || input[i] == '^')){
       return false;
     }
   }
@@ -67,4 +71,3 @@ void deleteWhitespace(char* text){
   }
   *newText = '\0';
 }
-

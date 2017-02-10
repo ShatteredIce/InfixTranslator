@@ -18,19 +18,3 @@ void Node::setNext(Node* newNode){
 Node* Node::getNext(){
   return next;
 }
-
-void Node::setLeftChild(Node* newNode){
-  leftChild = newNode;
-}
-
-Node* Node::getLeftChild(){
-  return leftChild;
-}
-
-void Node::setRightChild(Node* newNode){
-  rightChild = newNode;
-}
-
-Node* Node::getRightChild(){
-  return rightChild;
-}
