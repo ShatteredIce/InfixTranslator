@@ -11,6 +11,10 @@ Node::Node(char newToken){
   next = NULL;
 }
 
+char Node::getValue(){
+  return token;
+}
+
 void Node::setNext(Node* newNode){
   next = newNode;
 }

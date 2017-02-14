@@ -14,14 +14,8 @@ class Node {
   char getValue();
   void setNext(Node*);
   Node* getNext();
-  void setLeftChild(Node*);
-  Node* getLeftChild();
-  void setRightChild(Node*);
-  Node* getRightChild();
  protected:
   char token;
-  Node* leftChild;
-  Node* rightChild;
   Node* next;
 };
 #endif
