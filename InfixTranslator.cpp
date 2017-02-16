@@ -4,12 +4,14 @@
 
 using namespace std;
 
-Node* getLastNode(Node* current);
+Node* peek(Node* current);
 void deleteAllNodes(Node* & head);
 void display(Node* current);
 void getInput(char* input);
 bool isValidInput(char* input);
+bool isOperator(char c);
 void deleteWhitespace(char* input);
+void push(Node* & head, Node* data);
 
 int main(){
 
@@ -49,13 +51,12 @@ int main(){
       while(temp != NULL){
         //puts value into output stack if it is a digit
         if(isdigit(temp->getValue())){
-          if(outputHead == NULL){
-            outputHead = new Node(temp->getValue());
-          }
-          else{
-            getLastNode(outputHead)->setNext(new Node(temp->getValue()));
-          }
+          push(outputHead, new Node(temp->getValue()));
         }
+        //if value is an operator
+        // if(isOperator(temp->getValue()){
+        //   while(peek(operatorHead) != NULL)
+        // }
         temp = temp->getNext();
       }
       display(outputHead);
@@ -65,11 +66,27 @@ int main(){
   return 0;
 }
 
-Node* getLastNode(Node* current){
+Node* peek(Node* current){
+  if(current == NULL){
+    return current;
+  }
   while(current->getNext() != NULL){
     current = current->getNext();
   }
   return current;
+}
+
+void push(Node* & head, Node* data){
+  if(head == NULL){
+    head = data;
+  }
+  else{
+    peek(head)->setNext(data);
+  }
+}
+
+Node* pop(Node* head){
+
 }
 
 void deleteAllNodes(Node* & head){
@@ -97,6 +114,14 @@ bool isValidInput(char* input){
     }
   }
   return true;
+}
+
+//checks if user input is an operator
+bool isOperator(char c){
+  if(c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '^'){
+    return true;
+  }
+  return false;
 }
 
 //stores user input into a char*
