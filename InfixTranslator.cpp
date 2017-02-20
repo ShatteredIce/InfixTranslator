@@ -4,14 +4,16 @@
 
 using namespace std;
 
-Node* peek(Node* current);
+Node* peek(Node* head);
+Node* pop(Node* & head);
+void push(Node* & head, Node* data);
 void deleteAllNodes(Node* & head);
 void display(Node* current);
 void getInput(char* input);
 bool isValidInput(char* input);
 bool isOperator(char c);
 void deleteWhitespace(char* input);
-void push(Node* & head, Node* data);
+int getPrecedence(char c);
 
 int main(){
 
@@ -27,7 +29,7 @@ int main(){
   cout << "C++ Project 8 - Nathan Purwosumarto\n\n";
 
   while(running){
-    cout << "Awaiting input (infix notation): ";
+    cout << "Infix Notation: ";
     getInput(input);
     //if input = QUIT, then end the program
     if(strcmp(input, "quit") == 0){
@@ -37,6 +39,9 @@ int main(){
     else if(isValidInput(input) && strlen(input) > 0){
       if(outputHead != NULL){
         deleteAllNodes(outputHead);
+      }
+      if(operatorHead != NULL){
+        deleteAllNodes(operatorHead);
       }
       inputHead = new Node(input[0]);
       temp = inputHead;
@@ -54,26 +59,67 @@ int main(){
           push(outputHead, new Node(temp->getValue()));
         }
         //if value is an operator
-        // if(isOperator(temp->getValue()){
-        //   while(peek(operatorHead) != NULL)
-        // }
+        else if(isOperator(temp->getValue())){
+          //while there is an operator token o2 at the top of the operator stack and
+          //current operator is left-associative and its precedence is less than or equal to that of o2
+          while(peek(operatorHead) != NULL && temp->getValue() != '^' &&
+          getPrecedence(temp->getValue()) <= getPrecedence(peek(operatorHead)->getValue())){
+            //pop o2 off the operator stack and push onto the output queue
+            push(outputHead, pop(operatorHead));
+          }
+          //push current operator onto operator stack
+          push(operatorHead, new Node(temp->getValue()));
+        }
+        //if value is left parentheses, push it onto the operator stack
+        else if(temp->getValue() == '('){
+          push(operatorHead, new Node(temp->getValue()));
+        }
+        //if value is right parentheses, push it onto the operator stack
+        else if(temp->getValue() == ')'){
+          while(peek(operatorHead) != NULL && peek(operatorHead)->getValue() != '('){
+            push(outputHead, pop(operatorHead));
+          }
+          //delete the left parentheses
+          if(peek(operatorHead) != NULL){
+            pop(operatorHead);
+          }
+          else{
+            cout << "<mismatched parentheses detected>\n";
+          }
+        }
         temp = temp->getNext();
       }
+      //while there are no more tokens to read, empty the operator stack
+      while(peek(operatorHead) != NULL){
+        if(peek(operatorHead)->getValue() == '('){
+          cout << "<Mismatched Parentheses Detected>\n";
+          pop(operatorHead);
+        }
+        else{
+          push(outputHead, pop(operatorHead));
+        }
+      }
+      //push(outputHead, pop(outputHead));
+      deleteAllNodes(inputHead);
+      cout << "Postfix Notation: ";
       display(outputHead);
-      cout << endl;
+      cout << endl << endl;
+    }
+    else{
+      cout << "<Invalid Input>\n\n";
     }
   }
   return 0;
 }
 
-Node* peek(Node* current){
-  if(current == NULL){
-    return current;
+Node* peek(Node* head){
+  if(head == NULL){
+    return head;
   }
-  while(current->getNext() != NULL){
-    current = current->getNext();
+  while(head->getNext() != NULL){
+    head = head->getNext();
   }
-  return current;
+  return head;
 }
 
 void push(Node* & head, Node* data){
@@ -85,8 +131,27 @@ void push(Node* & head, Node* data){
   }
 }
 
-Node* pop(Node* head){
-
+Node* pop(Node* & head){
+  Node* temp;
+  if(head == NULL){
+    return head;
+  }
+  else if(head->getNext() == NULL){
+    temp = new Node(head->getValue());
+    delete head;
+    head = NULL;
+  }
+  else{
+    Node* current = head;
+    //get current equal to second to last node
+    while(current->getNext()->getNext() != NULL){
+      current = current->getNext();
+    }
+    temp = new Node(current->getNext()->getValue());
+    delete current->getNext();
+    current->setNext(NULL);
+  }
+  return temp;
 }
 
 void deleteAllNodes(Node* & head){
@@ -118,7 +183,7 @@ bool isValidInput(char* input){
 
 //checks if user input is an operator
 bool isOperator(char c){
-  if(c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '^'){
+  if(c == '+' || c == '-' || c == '*' || c == '/' || c == '^'){
     return true;
   }
   return false;
@@ -142,4 +207,20 @@ void deleteWhitespace(char* text){
     text++;
   }
   *newText = '\0';
+}
+
+//returns operator precedence
+int getPrecedence(char c){
+  if(c == '+' || c == '-'){
+    return 2;
+  }
+  else if(c == '*' || c == '/'){
+    return 3;
+  }
+  else if(c == '^'){
+    return 4;
+  }
+  else{
+    return 0;
+  }
 }
