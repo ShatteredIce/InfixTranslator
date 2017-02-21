@@ -1,9 +1,12 @@
+//C++ Project 8 - InfixTranslator - 2/21/17
+//Converts infix notation into postfix notation
 #include <iostream>
 #include <string.h>
 #include "Node.h"
 
 using namespace std;
 
+//prototypes
 Node* peek(Node* head);
 Node* pop(Node* & head);
 void push(Node* & head, Node* data);
@@ -31,12 +34,14 @@ int main(){
   while(running){
     cout << "Infix Notation: ";
     getInput(input);
-    //if input = QUIT, then end the program
+    //if input = quit, then end the program
     if(strcmp(input, "quit") == 0){
       cout << "\nProgram Terminated." << endl;
       running = false;
     }
+    //if the input is only made up of valid characters
     else if(isValidInput(input) && strlen(input) > 0){
+      //clear stacks if they are not empty
       if(outputHead != NULL){
         deleteAllNodes(outputHead);
       }
@@ -84,7 +89,7 @@ int main(){
             pop(operatorHead);
           }
           else{
-            cout << "<mismatched parentheses detected>\n";
+            cout << "<Mismatched Parentheses Detected>\n";
           }
         }
         temp = temp->getNext();
@@ -99,8 +104,9 @@ int main(){
           push(outputHead, pop(operatorHead));
         }
       }
-      //push(outputHead, pop(outputHead));
+      //delete input nodes
       deleteAllNodes(inputHead);
+      //print out result
       cout << "Postfix Notation: ";
       display(outputHead);
       cout << endl << endl;
@@ -112,6 +118,7 @@ int main(){
   return 0;
 }
 
+//return the last node in the LL
 Node* peek(Node* head){
   if(head == NULL){
     return head;
@@ -122,6 +129,7 @@ Node* peek(Node* head){
   return head;
 }
 
+//add a node to the end of a LL
 void push(Node* & head, Node* data){
   if(head == NULL){
     head = data;
@@ -131,6 +139,7 @@ void push(Node* & head, Node* data){
   }
 }
 
+//removes and returns the last node of a LL
 Node* pop(Node* & head){
   Node* temp;
   if(head == NULL){
@@ -154,6 +163,7 @@ Node* pop(Node* & head){
   return temp;
 }
 
+//deletes all nodes in the LL and sets the head to null
 void deleteAllNodes(Node* & head){
   while(head->getNext() != NULL){
     Node* temp = head->getNext();
@@ -164,6 +174,7 @@ void deleteAllNodes(Node* & head){
   head = NULL;
 }
 
+//displays all nodes in the LL
 void display(Node* current){
   if(current != NULL){
     cout << current->getValue();
