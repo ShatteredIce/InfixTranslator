@@ -15,7 +15,7 @@ void display(Node* current);
 void getInput(char* input);
 bool isValidInput(char* input);
 bool isOperator(char c);
-void deleteWhitespace(char* input);
+void trimWhitespace(char* input);
 int getPrecedence(char c);
 
 int main(){
@@ -74,6 +74,10 @@ int main(){
           }
           //push current operator onto operator stack
           push(operatorHead, new Node(temp->getValue()));
+        }
+        //if value is space, push it to the output stack if there is no previous space
+        if(temp->getValue() == ' ' && peek(outputHead)->getValue() != ' '){
+          push(outputHead, new Node(temp->getValue()));
         }
         //if value is left parentheses, push it onto the operator stack
         else if(temp->getValue() == '('){
@@ -185,7 +189,7 @@ void display(Node* current){
 //checks if the user input is valid
 bool isValidInput(char* input){
   for(int i = 0; i < strlen(input); i++){
-    if(!(isdigit(input[i]) || input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' || input[i] == '(' || input[i] == ')' || input[i] == '^')){
+    if(!(isdigit(input[i]) || input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' || input[i] == '(' || input[i] == ')' || input[i] == '^' || input[i] == ' ')){
       return false;
     }
   }
@@ -204,20 +208,28 @@ bool isOperator(char c){
 void getInput(char* input){
   fill(input, input + 81, ' ');
   cin.getline(input, 81);
-  deleteWhitespace(input);
+  trimWhitespace(input);
 }
 
-//deletes all whitespace from a char*
-void deleteWhitespace(char* text){
+//remove extra whitespaces to make sure string compares function as intended
+void trimWhitespace(char* text){
   char* newText = text;
+  char lastChar = ' ';
   while(*text != '\0'){
-    if(!(*text == ' ')){
+    if(!(*text == ' ' && lastChar == ' ')){
       *newText = *text;
+      lastChar = *text;
       newText++;
     }
     text++;
   }
-  *newText = '\0';
+  if(*(newText-1) == ' '){
+    *newText = '\0';
+  }
+  else{
+    *(newText-1) = ' ';
+    *newText = '\0';
+  }
 }
 
 //returns operator precedence
