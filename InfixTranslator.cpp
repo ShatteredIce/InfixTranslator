@@ -76,14 +76,15 @@ int main(){
           getPrecedence(temp->getValue()) <= getPrecedence(peek(operatorHead)->getValue())){
             //pop o2 off the operator stack and push onto the output queue
             push(outputHead, pop(operatorHead));
+            push(outputHead, new Node(' '));
           }
           //push current operator onto operator stack
           push(operatorHead, new Node(temp->getValue()));
         }
-        //if value is space, push it to the output stack if there is no previous space
-        else if(temp->getValue() == ' ' && peek(outputHead)->getValue() != ' '){
-          push(outputHead, new Node(temp->getValue()));
-        }
+        // //if value is space, push it to the output stack if there is no previous space
+        // else if(temp->getValue() == ' ' && peek(outputHead)->getValue() != ' '){
+        //   push(outputHead, new Node(temp->getValue()));
+        // }
         //if value is left parentheses, push it onto the operator stack
         else if(temp->getValue() == '('){
           push(operatorHead, new Node(temp->getValue()));
@@ -104,12 +105,14 @@ int main(){
         temp = temp->getNext();
       }
       //while there are no more tokens to read, empty the operator stack
+
       while(peek(operatorHead) != NULL){
         if(peek(operatorHead)->getValue() == '('){
           cout << "<Mismatched Parentheses Detected>\n";
           pop(operatorHead);
         }
         else{
+          push(outputHead, new Node(' '));
           push(outputHead, pop(operatorHead));
         }
       }
