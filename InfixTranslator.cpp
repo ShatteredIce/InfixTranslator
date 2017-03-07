@@ -51,6 +51,7 @@ int main(){
       inputHead = new Node(input[0]);
       temp = inputHead;
       //build the input queue
+      //cout << input << endl;
       for(int i = 1; i < strlen(input); i++){
         temp->setNext(new Node(input[i]));
         temp = temp->getNext();
@@ -59,12 +60,16 @@ int main(){
       //shunting yard algorithm
       temp = inputHead;
       while(temp != NULL){
+        //cout << temp->getValue() << endl;
         //puts value into output stack if it is a digit
         if(isdigit(temp->getValue())){
           push(outputHead, new Node(temp->getValue()));
         }
         //if value is an operator
         else if(isOperator(temp->getValue())){
+          if(peek(outputHead)->getValue() != ' '){
+            push(outputHead, new Node(' '));
+          }
           //while there is an operator token o2 at the top of the operator stack and
           //current operator is left-associative and its precedence is less than or equal to that of o2
           while(peek(operatorHead) != NULL && temp->getValue() != '^' &&
@@ -76,7 +81,7 @@ int main(){
           push(operatorHead, new Node(temp->getValue()));
         }
         //if value is space, push it to the output stack if there is no previous space
-        if(temp->getValue() == ' ' && peek(outputHead)->getValue() != ' '){
+        else if(temp->getValue() == ' ' && peek(outputHead)->getValue() != ' '){
           push(outputHead, new Node(temp->getValue()));
         }
         //if value is left parentheses, push it onto the operator stack
@@ -224,10 +229,9 @@ void trimWhitespace(char* text){
     text++;
   }
   if(*(newText-1) == ' '){
-    *newText = '\0';
+    *(newText-1) = '\0';
   }
   else{
-    *(newText-1) = ' ';
     *newText = '\0';
   }
 }
